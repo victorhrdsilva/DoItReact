@@ -15,6 +15,12 @@ const Wrapper = styled.div`
     align-items: center;
     height: 100vh;
 
+    form {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
 input {
    
     width: 80vw;
@@ -24,11 +30,11 @@ input {
     border-radius: 5px;
     margin-bottom: 6px;
     box-sizing: border-box;
+    padding-left: 11px;
+    font-size: 20px;
 
     &::placeholder {
-        font-size: 20px;
         color: var(--border-color-input);
-        padding-left: 11px;
     }
 
     &[type=submit] {
