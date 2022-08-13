@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import FormStyled from "../styled/FormStyled";
 import { login } from "./Service/Service";
 import UserContext from "../contexts/UserContext";
+import {ThreeDots} from 'react-loader-spinner'
 
 export default function LoginPage() {
     const [form, setForm] = useState({
@@ -37,7 +38,16 @@ export default function LoginPage() {
             <form onSubmit={Submit}>
                 <input name="email" value={form.email} type="email" placeholder="email" onChange={handleForm} required></input>
                 <input name="password" value={form.password} type="password" placeholder="senha" onChange={handleForm} required></input>
-                <input type="submit" value="Entrar"></input>
+                <button>{loading ? <ThreeDots
+                    height="80"
+                    width="80"
+                    radius="9"
+                    color="#FFFFFF"
+                    ariaLabel="three-dots-loading"
+                    wrapperStyle={{}}
+                    wrapperClassName=""
+                    visible={true}
+                /> : "Entrar"}</button>
             </form>
             <Link to={"/register"}>
                 <p>Não tem uma conta? Cadastre-se!</p>

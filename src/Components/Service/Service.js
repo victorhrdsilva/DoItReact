@@ -20,6 +20,7 @@ function login(body) {
 
 function register(body) {
   const promise = axios.post(`${url}auth/sign-up`, body);
+  promise.then(console.log(promise.data))
   return promise;
 };
 
