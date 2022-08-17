@@ -1,9 +1,9 @@
 import FormStyled from "../styled/FormStyled"
 import { Link, useNavigate } from "react-router-dom"
 import { useContext, useState } from "react"
-import { register } from "./Service/Service";
+import { register } from "../Service/Service";
 import UserContext from "../contexts/UserContext";
-import {ThreeDots} from 'react-loader-spinner'
+import { ThreeDots } from 'react-loader-spinner'
 
 export default function RegisterPage() {
     const { loading, setLoading } = useContext(UserContext)
@@ -32,11 +32,14 @@ export default function RegisterPage() {
                 navigate("/");
                 setLoading(false);
             }).catch(() => {
-                alert((res) => { alert(res.response.data.message) })
+                alert((res) => {
+                    alert(res.response.data.message);
+                    setLoading(false)
+                })
             })
     }
 
- 
+
     return (
         <FormStyled>
             <form onSubmit={Submit}>

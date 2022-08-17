@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import FormStyled from "../styled/FormStyled";
-import { login } from "./Service/Service";
+import { login } from "../Service/Service";
 import UserContext from "../contexts/UserContext";
 import {ThreeDots} from 'react-loader-spinner'
 
@@ -29,8 +29,11 @@ export default function LoginPage() {
         login(form).then((res) => {
             localStorage.setItem("happenToken", res.token);
             localStorage.setItem("userImage", res.data.image);
-            navigate('/today');
-        }).catch((res) => { alert(res.response.data.message) });
+            navigate('/habits');
+        }).catch((res) => { 
+            alert(res.response.data.message);
+            setLoading(false)
+        });
     }
 
     return (
