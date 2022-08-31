@@ -2,7 +2,6 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { useState } from 'react';
 import GlobalStyle from '../styled/globalStyles';
 import PrivatePage from "./PrivatePage";
-import Header from './Header';
 import LoginPage from './LoginPage';
 import Habits from './Habits';
 import RegisterPage from './RegisterPage';
@@ -14,7 +13,6 @@ export default function App() {
     return (
         <>
             <GlobalStyle />
-            <Header />
             <UserContext.Provider value={{ loading, setLoading }}>
                 <BrowserRouter>
                     <Routes>
