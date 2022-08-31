@@ -7,23 +7,23 @@ export default function Footer() {
 
     return (
         <Wrapper>
-            <ProgressBar>
-                <CircularProgressbar 
-                    value={value}
-                    background="true"
-                    backgroundPadding={8}
-                    maxValue={1} 
-                    text={`${value * 100}%`} 
-                    styles={buildStyles({
-                        textColor: "#fff",
-                        pathColor: "#fff",
-                        trailColor: "transparent",
-                        backgroundColor: '#52B6FF',
-                    })}
-                    />
-            </ProgressBar>
             <Background>
                 <h3>Hábitos</h3>
+                <ProgressBar>
+                    <CircularProgressbar
+                        value={value}
+                        background="true"
+                        backgroundPadding={8}
+                        maxValue={1}
+                        text={`${value * 100}%`}
+                        styles={buildStyles({
+                            textColor: "#fff",
+                            pathColor: "#fff",
+                            trailColor: "transparent",
+                            backgroundColor: '#52B6FF',
+                        })}
+                    />
+                </ProgressBar>
                 <h3>Histórico</h3>
             </Background>
         </Wrapper>
@@ -55,9 +55,7 @@ const Background = styled.div`
     height: 70px;
 `
 const ProgressBar = styled.div`
-    width: 80px;
-    height: 80px;
-    position: fixed;
-    bottom: 8px;
-    left: calc(50vw - 45.5px);
+    width: 90px;
+    height: 90px;
+    margin-bottom: 50px;
 `
