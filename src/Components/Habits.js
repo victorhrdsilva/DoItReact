@@ -2,13 +2,24 @@ import { useState } from 'react';
 import styled from 'styled-components';
 
 
-function DayButton ({inicial}) {
+function DayButton ({day, inicial, setSelectedDays, selectedDays}) {
     const [isSelectedButton, setIsSelectedButton] = useState(false);
+    
+    function selectDay() {
+        setSelectedDays([...selectedDays, day])
+        setIsSelectedButton(!isSelectedButton)
+    }
+
+    function deselectDay() {
+        let numberDay = selectedDays.indexOf(day)
+        selectedDays.splice(numberDay, 1)
+        setIsSelectedButton(!isSelectedButton)
+    }
 
     return ( 
     <>
-        {isSelectedButton ? <ButtonDaySelected onClick={() => setIsSelectedButton(!isSelectedButton)}>{inicial}</ButtonDaySelected>:
-        <ButtonDay onClick={() => setIsSelectedButton(!isSelectedButton)}>{inicial}</ButtonDay>            
+        {isSelectedButton ? <ButtonDaySelected onClick={deselectDay}>{inicial}</ButtonDaySelected>:
+        <ButtonDay onClick={selectDay}>{inicial}</ButtonDay>            
         }    
     </>
     )
@@ -38,8 +49,22 @@ export default function Habits() {
         inicial: "S",
         day: 7        
         }
-    ]
+    ];
+
+    const [newHabitsForm, setNewHabitsForm] = useState({
+        name: "",
+        days: []
+    });
     
+    const [selectedDays, setSelectedDays] = useState([])
+
+    function handleForm(event) {
+        setNewHabitsForm({
+            ...newHabitsForm,
+            [event.target.name]: event.target.value
+        });
+    };
+
     const [isOpenedNewHabits, setIsOpenedNewHabits] = useState(false)
 
     return (
@@ -53,16 +78,19 @@ export default function Habits() {
                 </button>
             </Headline>
             <NewHabits isOpenedNewHabits={isOpenedNewHabits}>
-                <input type="text" placeholder='nome do hábito' />
+                <input name='name' value={newHabitsForm.name} type="text" placeholder='nome do hábito' onChange={handleForm}/>
                 <WeekDays>
                     {days.map((item, index) => 
                     <DayButton
                         key={index}
-                        inicial={item.inicial} 
+                        selectedDays={selectedDays}
+                        setSelectedDays={setSelectedDays}
+                        inicial={item.inicial}
+                        day={item.day}
                         />)}
                 </WeekDays>
                 <Buttons>
-                    <button>Cancel</button>
+                    <button onClick={() => setIsOpenedNewHabits(!isOpenedNewHabits)}>Cancel</button>
                     <input type='submit' value='Salvar'></input>
                 </Buttons>
             </NewHabits>
