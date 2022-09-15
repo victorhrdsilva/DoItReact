@@ -1,13 +1,15 @@
 import { useState } from 'react';
 import styled from 'styled-components';
+import { create } from '../Service/Service';
 
 
-function DayButton ({day, inicial, setSelectedDays, selectedDays}) {
+function DayButton({ day, inicial, setSelectedDays, selectedDays }) {
     const [isSelectedButton, setIsSelectedButton] = useState(false);
-    
+
     function selectDay() {
         setSelectedDays([...selectedDays, day])
         setIsSelectedButton(!isSelectedButton)
+        console.log(selectedDays)
     }
 
     function deselectDay() {
@@ -16,47 +18,43 @@ function DayButton ({day, inicial, setSelectedDays, selectedDays}) {
         setIsSelectedButton(!isSelectedButton)
     }
 
-    return ( 
-    <>
-        {isSelectedButton ? <ButtonDaySelected onClick={deselectDay}>{inicial}</ButtonDaySelected>:
-        <ButtonDay onClick={selectDay}>{inicial}</ButtonDay>            
-        }    
-    </>
+    return (
+        <>
+            {isSelectedButton ? <ButtonDaySelected onClick={deselectDay}>{inicial}</ButtonDaySelected> :
+                <ButtonDay onClick={selectDay}>{inicial}</ButtonDay>
+            }
+        </>
     )
 }
+
+function HabitsListTemplete ({name, days, id, daysInicial}) {
+    
+    return (
+        <HabitsList>
+        <h2>{name}</h2>
+            <WeekDays>
+            {
+                days.map((item, index) => {item === index+1 ? <ButtonDaySelected>{daysInicial[index]}</ButtonDaySelected> :
+                <ButtonDay>{daysInicial[index]}</ButtonDay>
+            })
+            }
+            </WeekDays>
+        </HabitsList>
+    )
+}
+
+
 export default function Habits() {
-    const days = [
-        {
-        inicial: "D",
-        day: 1        
-        },
-        {
-        inicial: "S",
-        day: 2        
-        },{
-        inicial: "T",
-        day: 3        
-        },{
-        inicial: "Q",
-        day: 4        
-        },{
-        inicial: "Q",
-        day: 5        
-        },{
-        inicial: "S",
-        day: 6        
-        },{
-        inicial: "S",
-        day: 7        
-        }
-    ];
+    const daysInicial = ["D","S","T","Q","Q","S","S"];
 
     const [newHabitsForm, setNewHabitsForm] = useState({
         name: "",
         days: []
     });
-    
+
     const [selectedDays, setSelectedDays] = useState([])
+    
+    const [isOpenedNewHabits, setIsOpenedNewHabits] = useState(false)
 
     function handleForm(event) {
         setNewHabitsForm({
@@ -65,7 +63,41 @@ export default function Habits() {
         });
     };
 
-    const [isOpenedNewHabits, setIsOpenedNewHabits] = useState(false)
+    function submitNewHabits () {
+        setNewHabitsForm({
+            ...newHabitsForm,
+            days: selectedDays
+        })
+
+        create(newHabitsForm).then((res) => {
+            
+        }).catch((res) => { 
+            alert(res.response.data.message);
+        });
+    }
+
+    const myhabits = [
+        {
+            id: 1,
+            name: "Ser amado pelo Gabriel",
+            days: [1, 3, 5]
+        },
+        {
+            id: 2,
+            name: "Dar amor o Luffy",
+            days: [1, 3, 6]
+        },
+        {
+            id: 3,
+            name: "Ser um bom pai de pet",
+            days: [1, 2, 4, 7]
+        },
+        {
+            id: 4,
+            name: "Correr atrás do Dalí",
+            days: [2,5]
+        }
+    ]
 
     return (
         <Wrapper>
@@ -78,23 +110,33 @@ export default function Habits() {
                 </button>
             </Headline>
             <NewHabits isOpenedNewHabits={isOpenedNewHabits}>
-                <input name='name' value={newHabitsForm.name} type="text" placeholder='nome do hábito' onChange={handleForm}/>
+                <input name='name' value={newHabitsForm.name} type="text" placeholder='nome do hábito' onChange={handleForm} />
                 <WeekDays>
-                    {days.map((item, index) => 
-                    <DayButton
-                        key={index}
-                        selectedDays={selectedDays}
-                        setSelectedDays={setSelectedDays}
-                        inicial={item.inicial}
-                        day={item.day}
+                    {daysInicial.map((item, index) =>
+                        <DayButton
+                            key={index}
+                            selectedDays={selectedDays}
+                            setSelectedDays={setSelectedDays}
+                            inicial={item}
+                            day={index+1}
                         />)}
                 </WeekDays>
                 <Buttons>
                     <button onClick={() => setIsOpenedNewHabits(!isOpenedNewHabits)}>Cancel</button>
-                    <input type='submit' value='Salvar'></input>
+                    <input type='submit' onClick={submitNewHabits} value='Salvar'></input>
                 </Buttons>
             </NewHabits>
             <p>Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</p>
+                {myhabits.map((item, index) =>
+                <HabitsListTemplete
+                    key={index}
+                    id={item.id}
+                    name={item.name}
+                    days={item.days}
+                    index={index}
+                    daysInicial={daysInicial}
+                />)}
+            
         </Wrapper>
     )
 }
@@ -201,4 +243,7 @@ const Buttons = styled.div`
         padding: 0;
         margin-left: 10px;
     }
+`
+const HabitsList = styled(NewHabits)`
+    height: 91px;
 `
