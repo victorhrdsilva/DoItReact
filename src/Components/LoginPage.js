@@ -27,9 +27,10 @@ export default function LoginPage() {
         setLoading(true);
 
         login(form).then((res) => {
-            localStorage.setItem("happenToken", res.token);
+            localStorage.setItem("happenToken", res.data.token);
             localStorage.setItem("userImage", res.data.image);
             navigate('/habits');
+            setLoading(false);
         }).catch((res) => { 
             alert(res.response.data.message);
             setLoading(false)

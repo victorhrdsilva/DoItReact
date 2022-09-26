@@ -1,16 +1,22 @@
 import axios from "axios";
 
 const url = "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/"
+let config = {
+  headers: {
+    Authorization: ``
+  }
+}
 
 function createHeaders() {
     const auth = localStorage.getItem("happenToken");
-    const config = {
+    config = {
       headers: {
-        Authorization: `Bearer ${auth.token}`
+        Authorization: `Bearer ${auth}`
       }
     };
-    
+    console.log(config)
     return config;
+
 };
 
 function login(body) {
@@ -26,13 +32,13 @@ function register(body) {
 
 function create(body) {
   const config = createHeaders();
-  const promise = axios.post(`${url}/habits`, body, config);
+  const promise = axios.post(`${url}habits`, body, config);
   return promise;
 };
 
 function getHabits() {
   const config = createHeaders();
-  const promise = axios.get(`${url}/habits`, config);
+  const promise = axios.get(`${url}habits`, config);
   return promise;
 };
 
