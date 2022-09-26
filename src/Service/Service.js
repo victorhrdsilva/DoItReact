@@ -33,6 +33,7 @@ function register(body) {
 function create(body) {
   const config = createHeaders();
   const promise = axios.post(`${url}habits`, body, config);
+  console.log(body)
   return promise;
 };
 
@@ -42,4 +43,10 @@ function getHabits() {
   return promise;
 };
 
-export { login, create, getHabits, register };
+function delectHabit(id) {
+  const config = createHeaders();
+  const promise = axios.delete(`${url}habits/${id}`, config);
+  return promise;
+}
+
+export { login, create, getHabits, register, delectHabit };

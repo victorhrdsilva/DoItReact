@@ -1,12 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { create } from '../Service/Service';
+import { create, delectHabit, getHabits } from '../../Service/Service';
 import { useNavigate } from 'react-router-dom';
+import UserContext from '../../contexts/UserContext';
+import HabitsListTemplete from './HabitsListTemplete';
 
 
-function DayButton({ day, inicial, setSelectedDays, selectedDays, envios }) {
+function DayButton({ day, inicial, setSelectedDays, selectedDays, shipments }) {
     const [isSelectedButton, setIsSelectedButton] = useState(false);
-    useEffect(() => setIsSelectedButton(false), [envios])
+    useEffect(() => setIsSelectedButton(false), [shipments])
 
     function selectDay() {
         setSelectedDays([...selectedDays, day])
@@ -28,94 +30,54 @@ function DayButton({ day, inicial, setSelectedDays, selectedDays, envios }) {
     )
 }
 
-function HabitsListTemplete({ name, days, id, daysInicial }) {
-
-    function returnDays(item, index) {
-        if (days.includes(index + 1)) {
-            return (<ButtonDaySelected key={index}>{daysInicial[index]}</ButtonDaySelected>)
-        } else {
-            return (<ButtonDay key={index}>{daysInicial[index]}</ButtonDay>)
-        }
-    }
-
-    return (
-        <HabitsList>
-            <NameAndTrash>
-                <h2>{name}</h2>
-                <ion-icon name="trash-outline" onClick></ion-icon>
-            </NameAndTrash>
-            <WeekDays>
-                {
-                    daysInicial.map(
-                        (item, index) => returnDays(item, index)
-                    )}
-            </WeekDays>
-        </HabitsList>
-    )
-}
 
 export default function Habits() {
     const daysInicial = ["D", "S", "T", "Q", "Q", "S", "S"];
 
-    const [newHabitsForm, setNewHabitsForm] = useState({
-        name: "",
-        days: []
-    });
-
-    const [envios, setEnvios] = useState(0)
+    const [shipments, setShipments] = useState(0)
 
     const navigate = useNavigate();
 
-    const [selectedDays, setSelectedDays] = useState([])
+    const [selectedDays, setSelectedDays] = useState([]);
 
-    const [isOpenedNewHabits, setIsOpenedNewHabits] = useState(false)
+    const [isOpenedNewHabits, setIsOpenedNewHabits] = useState(false);
+
+    const [myHabits, setMyHabits] = useState([]);
+
+    const [nameHabit, setNameHabit] = useState('');
+
+    const {reload, setReload} = useContext(UserContext);
 
     function handleForm(event) {
-        setNewHabitsForm({
-            ...newHabitsForm,
-            [event.target.name]: event.target.value
-        });
+        setNameHabit(event.target.value);
     };
 
     function submitNewHabits() {
-        setNewHabitsForm({
-            ...newHabitsForm,
+
+        const newHabitsForm = {
+            name: nameHabit,
             days: selectedDays
-        })
+        }
 
         create(newHabitsForm).then((res) => {
-            setNewHabitsForm({name: "",
-            days: []});
             setSelectedDays([])
-            setEnvios(envios+1)
+            setNameHabit("")
+            setShipments(shipments+1)
+            setReload(reload+1)
         }).catch((res) => {
             alert(res.response.data.message);
             navigate('/');
         });
     }
 
-    const myhabits = [
-        {
-            id: 1,
-            name: "Ser amado pelo Gabriel",
-            days: [1, 3, 5]
-        },
-        {
-            id: 2,
-            name: "Dar amor o Luffy",
-            days: [1, 3, 6]
-        },
-        {
-            id: 3,
-            name: "Ser um bom pai de pet",
-            days: [1, 2, 4, 7]
-        },
-        {
-            id: 4,
-            name: "Correr atrás do Dalí",
-            days: [2, 5]
-        }
-    ]
+    useEffect(() =>
+        getHabits().then((res => {
+            setMyHabits(res.data);
+            console.log(res.data)
+        })).catch((res) => {
+            alert(res.response.data.message);
+        }), [reload]
+    )
 
     return (
         <Wrapper>
@@ -128,7 +90,7 @@ export default function Habits() {
                 </button>
             </Headline>
             <NewHabits isOpenedNewHabits={isOpenedNewHabits}>
-                <input name='name' value={newHabitsForm.name} type="text" placeholder='nome do hábito' onChange={handleForm} />
+                <input name='nameHabit' value={nameHabit} type="text" placeholder='nome do hábito' onChange={handleForm} />
                 <WeekDays>
                     {daysInicial.map((item, index) =>
                         <DayButton
@@ -137,7 +99,8 @@ export default function Habits() {
                             setSelectedDays={setSelectedDays}
                             inicial={item}
                             day={index + 1}
-                            envios={envios}
+                            reload={reload}
+                            setReload={setReload}
                         />)}
                 </WeekDays>
                 <Buttons>
@@ -146,7 +109,7 @@ export default function Habits() {
                 </Buttons>
             </NewHabits>
             <p>Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</p>
-            {myhabits.map((item, index) =>
+            {myHabits.map((item, index) =>
                 <HabitsListTemplete
                     key={index}
                     id={item.id}
