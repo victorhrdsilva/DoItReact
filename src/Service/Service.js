@@ -14,7 +14,6 @@ function createHeaders() {
         Authorization: `Bearer ${auth}`
       }
     };
-    console.log(config)
     return config;
 
 };

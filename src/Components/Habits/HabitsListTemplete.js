@@ -2,11 +2,12 @@ import UserContext from "../../contexts/UserContext";
 import { useContext } from "react";
 import { delectHabit } from "../../Service/Service";
 import styled from 'styled-components';
+import {ThreeDots} from 'react-loader-spinner';
 
 
 export default function HabitsListTemplete({ name, days, id, daysInicial }) {
 
-    const {reload, setReload} = useContext(UserContext);
+    const { reload, setReload } = useContext(UserContext);
 
     function returnDays(item, index) {
         if (days.includes(index + 1)) {
@@ -20,12 +21,15 @@ export default function HabitsListTemplete({ name, days, id, daysInicial }) {
         <HabitsList>
             <NameAndTrash>
                 <h2>{name}</h2>
-                <ion-icon name="trash-outline" onClick={() => 
-                    delectHabit(id).then((res) => 
-                        setReload(reload+1)
-                    ).catch((res) =>
-                    alert(res.response.data.message)
-                    )}></ion-icon>
+                <ion-icon name="trash-outline" onClick={() => {
+                    if (window.confirm("Você apagará o hábito com essa ação! Clique em OK para continuar.")) {
+                        delectHabit(id).then((res) =>
+                            setReload(reload + 1)
+                        ).catch((res) =>
+                            alert(res.response.data.message)
+                        )
+                    }
+                }}></ion-icon>
             </NameAndTrash>
             <WeekDays>
                 {

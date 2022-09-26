@@ -1,9 +1,10 @@
 import { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { create, delectHabit, getHabits } from '../../Service/Service';
+import { create, getHabits } from '../../Service/Service';
 import { useNavigate } from 'react-router-dom';
 import UserContext from '../../contexts/UserContext';
 import HabitsListTemplete from './HabitsListTemplete';
+import { ThreeDots } from 'react-loader-spinner';
 
 
 function DayButton({ day, inicial, setSelectedDays, selectedDays, shipments }) {
@@ -46,13 +47,14 @@ export default function Habits() {
 
     const [nameHabit, setNameHabit] = useState('');
 
-    const {reload, setReload} = useContext(UserContext);
+    const { reload, setReload, loading, setLoading } = useContext(UserContext);
 
     function handleForm(event) {
         setNameHabit(event.target.value);
     };
 
     function submitNewHabits() {
+        setLoading(true);
 
         const newHabitsForm = {
             name: nameHabit,
@@ -60,69 +62,87 @@ export default function Habits() {
         }
 
         create(newHabitsForm).then((res) => {
-            setSelectedDays([])
-            setNameHabit("")
-            setShipments(shipments+1)
-            setReload(reload+1)
+            setSelectedDays([]);
+            setNameHabit("");
+            setShipments(shipments + 1)
+            setReload(reload + 1)
+            setLoading(false);
+            setIsOpenedNewHabits(!isOpenedNewHabits)
         }).catch((res) => {
             alert(res.response.data.message);
-            navigate('/');
+            setLoading(false);
         });
     }
 
     useEffect(() =>
         getHabits().then((res => {
             setMyHabits(res.data);
-            console.log(res.data)
         })).catch((res) => {
             alert(res.response.data.message);
         }), [reload]
     )
 
     return (
-        <Wrapper>
-            <Headline>
-                <h2>
-                    Meus hábitos
-                </h2>
-                <button onClick={() => setIsOpenedNewHabits(!isOpenedNewHabits)}>
-                    +
-                </button>
-            </Headline>
-            <NewHabits isOpenedNewHabits={isOpenedNewHabits}>
-                <input name='nameHabit' value={nameHabit} type="text" placeholder='nome do hábito' onChange={handleForm} />
-                <WeekDays>
-                    {daysInicial.map((item, index) =>
-                        <DayButton
-                            key={index}
-                            selectedDays={selectedDays}
-                            setSelectedDays={setSelectedDays}
-                            inicial={item}
-                            day={index + 1}
-                            reload={reload}
-                            setReload={setReload}
-                        />)}
-                </WeekDays>
-                <Buttons>
-                    <button onClick={() => setIsOpenedNewHabits(!isOpenedNewHabits)}>Cancel</button>
-                    <input type='submit' onClick={submitNewHabits} value='Salvar'></input>
-                </Buttons>
-            </NewHabits>
-            <p>Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</p>
-            {myHabits.map((item, index) =>
-                <HabitsListTemplete
-                    key={index}
-                    id={item.id}
-                    name={item.name}
-                    days={item.days}
-                    index={index}
-                    daysInicial={daysInicial}
-                />)}
-
-        </Wrapper>
+        <>
+            {loading ? <InvisibleLayer></InvisibleLayer> : ""}
+            <Wrapper>
+                <Headline>
+                    <h2>
+                        Meus hábitos
+                    </h2>
+                    <button onClick={() => setIsOpenedNewHabits(!isOpenedNewHabits)}>
+                        +
+                    </button>
+                </Headline>
+                <NewHabits isOpenedNewHabits={isOpenedNewHabits}>
+                    <input name='nameHabit' value={nameHabit} type="text" placeholder='nome do hábito' onChange={handleForm} />
+                    <WeekDays>
+                        {daysInicial.map((item, index) =>
+                            <DayButton
+                                key={index}
+                                selectedDays={selectedDays}
+                                setSelectedDays={setSelectedDays}
+                                inicial={item}
+                                day={index + 1}
+                                shipments={shipments}
+                            />)}
+                    </WeekDays>
+                    <Buttons>
+                        <button onClick={() => setIsOpenedNewHabits(!isOpenedNewHabits)}>Cancel</button>
+                        <Submit onClick={submitNewHabits}>{loading ? <ThreeDots
+                            height="80"
+                            width="80"
+                            radius="9"
+                            color="#FFFFFF"
+                            ariaLabel="three-dots-loading"
+                            wrapperStyle={{}}
+                            wrapperClassName=""
+                            visible={true}
+                        /> : 'Salvar'}</Submit>
+                    </Buttons>
+                </NewHabits>
+                {myHabits.length === 0 ? <p>Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</p> : ""}
+                {myHabits.map((item, index) =>
+                    <HabitsListTemplete
+                        key={index}
+                        id={item.id}
+                        name={item.name}
+                        days={item.days}
+                        index={index}
+                        daysInicial={daysInicial}
+                    />)}
+            </Wrapper>
+        </>
     )
 }
 
+const InvisibleLayer = styled.div`
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    background-color: rgba(255, 255, 255, 0.3);
+    z-index: 2;
+`
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
@@ -216,26 +236,17 @@ const Buttons = styled.div`
         font-size: 18px;
 
     }
-    input {
-        width: 84px;
-        height: 35px;
-        color: var(--secundary-background-color);
-        background-color: var(--secondary-color);
-        font-size: 18px;
-        padding: 0;
-        margin-left: 10px;
-    }
 `
-const HabitsList = styled(NewHabits)`
-    height: 91px;
-    align-items: flex-start;
-    padding: 5vw;
-    color: var(--primary-text-color);
-
-`
-const NameAndTrash = styled.div`
+const Submit = styled.div`
     display: flex;
-    justify-content: space-between;
-    width: 100%;
-    font-size: 20px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    width: 84px;
+    height: 35px;
+    color: var(--secundary-background-color);
+    background-color: var(--secondary-color);
+    font-size: 18px;
+    padding: 0;
+    margin-left: 10px;
 `
