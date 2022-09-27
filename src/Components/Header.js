@@ -1,10 +1,11 @@
 import styled from 'styled-components';
+import logo from '../image/ativo5.png'
 export default function Header () {
     let userImage = localStorage.getItem("userImage");
     return (
         <Wrapper>
             <Logo>
-                <p>Do It</p>
+            <img src={logo} alt="logo"></img>
             </Logo>
             <Image img={userImage}></Image>
         </Wrapper>
@@ -18,7 +19,7 @@ const Wrapper = styled.div`
     align-items: center;
     width: 100vw;
     height: 70px;
-    background: var(--primary-color);
+    background: var(--secundary-text-color);
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15);
     position: fixed;
     top: 0;
@@ -28,6 +29,9 @@ const Wrapper = styled.div`
 const Logo = styled.div`
     font-size: 25px;
     font-weight: 700;
+    img {
+        width: 80px;
+    }
 `
 const Image = styled.div`
     background-image: url(${props => props.img});

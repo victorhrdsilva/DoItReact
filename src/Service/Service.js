@@ -57,13 +57,13 @@ function getHabitsToday() {
 
 function setHabitsTodayDone(id) {
   const config = createHeaders();
-  const promise = axios.post(`${url}habits/${id}/check`, config);
+  const promise = axios.post(`${url}habits/${id}/check`, {}, config);
   return promise;
 };
 
 function setHabitsTodayUndone(id) {
   const config = createHeaders();
-  const promise = axios.post(`${url}habits/${id}/uncheck`, config);
+  const promise = axios.post(`${url}habits/${id}/uncheck`, {}, config);
   return promise;
 };
 

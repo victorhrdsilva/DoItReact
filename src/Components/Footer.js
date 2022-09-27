@@ -2,12 +2,36 @@ import { buildStyles, CircularProgressbar } from 'react-circular-progressbar';
 import styled from 'styled-components';
 import 'react-circular-progressbar/dist/styles.css';
 import { useNavigate } from 'react-router-dom';
+import { useContext, useEffect } from 'react';
+import UserContext from '../contexts/UserContext';
+import { getHabitsToday } from '../Service/Service';
 
 
 export default function Footer() {
     const navigate = useNavigate();
-    
-    const value = 0.80;
+    const { reload, todayDoneHabits, setTodayDoneHabits, todayHabitsData, setTodayHabitsData, percentageTodayHabitsDone, setPercentageTodayHabitsDone } = useContext(UserContext);
+
+    useEffect(() =>
+        getHabitsToday().then((res => {
+            setTodayHabitsData(res.data);
+        })).catch((res) => {
+            alert(res.response.data.message);
+        }), [reload]);
+
+
+    setTodayDoneHabits(todayHabitsData.filter((item) => {
+        if (item.done) {
+            return true
+        } else {
+            return false
+        }
+    }).length)
+
+    if(todayDoneHabits > 0 && todayHabitsData.length > 0){
+        setPercentageTodayHabitsDone((todayDoneHabits/todayHabitsData.length*100));
+    } else {
+        setPercentageTodayHabitsDone(0);
+    }
 
     return (
         <Wrapper>
@@ -15,20 +39,20 @@ export default function Footer() {
                 <h3 onClick={() => navigate('/habits')}>Hábitos</h3>
                 <ProgressBar onClick={() => navigate('/today')}>
                     <CircularProgressbar
-                        value={value}
+                        value={percentageTodayHabitsDone/100}
                         background="true"
                         backgroundPadding={8}
                         maxValue={1}
-                        text={`${value * 100}%`}
+                        text={percentageTodayHabitsDone === 0 ? "Hoje" : `${percentageTodayHabitsDone.toFixed(0)}%`}
                         styles={buildStyles({
-                            textColor: "#fff",
-                            pathColor: "#fff",
+                            textColor: "#4D4D4D",
+                            pathColor: "#4D4D4D",
                             trailColor: "transparent",
-                            backgroundColor: '#52B6FF',
+                            backgroundColor: '#daff00',
                         })}
                     />
                 </ProgressBar>
-                <h3>Histórico</h3>
+                <h3 onClick={() => navigate('/historic')}>Histórico</h3>
             </Background>
         </Wrapper>
     )
@@ -41,7 +65,7 @@ const Wrapper = styled.div`
     align-items: center;
     width: 100vw;
     height: 70px;
-    background: #FFFFFF;
+    background: #4D4D4D;
     color: var(--secondary-color);
     font-weight: 700;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15);

@@ -29,6 +29,12 @@ const Wrapper = styled.div`
     justify-content: center;
     align-items: center;
     height: 100vh;
+    background-color: #1e1e1e;
+
+    img{
+        width: 50vw;
+        margin-bottom: 40px;
+    }
 
     form {
         display: flex;

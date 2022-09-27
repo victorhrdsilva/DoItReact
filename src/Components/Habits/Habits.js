@@ -4,6 +4,7 @@ import { create, getHabits } from '../../Service/Service';
 import UserContext from '../../contexts/UserContext';
 import HabitsListTemplete from './HabitsListTemplete';
 import { ThreeDots } from 'react-loader-spinner';
+import backgroundImage from "../../image/wickedbackground.png"
 
 
 function DayButton({ day, inicial, setSelectedDays, selectedDays, shipments }) {
@@ -145,7 +146,7 @@ const Wrapper = styled.div`
     flex-direction: column;
     align-items: center;
     padding: 100px 0;
-    background-color: var(--background-color);
+    background-color: var(--secundary-background-color);
     min-height: 70vh;
     p{
         width: 85vw;
@@ -157,11 +158,13 @@ const Wrapper = styled.div`
 const Headline = styled.div`
     display: flex;
     justify-content: space-between;
+    align-items: center;
     box-sizing: border-box;
     width: 85vw;
     h2 {
-        font-size: 23px;
-        color: var(--primary-color);
+        font-size: 28px;
+        color: var(--secundary-text-color);
+        font-weight: 800;
     }
     button {
         width: 40px;
@@ -217,10 +220,12 @@ const ButtonDay = styled.button`
     color: var(--border-color-input);
     background-color: var(--secundary-background-color);
     border-radius: 5px;
+    font-weight: 800;
 `
 const ButtonDaySelected = styled(ButtonDay)`
-    background-color: var(--selected-button-color);
-    color: var(--secundary-background-color);
+    background-color: var(--secondary-color);
+    color: var(--secundary-text-color);
+    border: none;
 `
 const Buttons = styled.div`
     display: flex;
@@ -229,7 +234,7 @@ const Buttons = styled.div`
     button {
         border: none;
         background-color: transparent;
-        color: var(--secondary-color);
+        color: var(--secundary-text-color);
         font-size: 18px;
 
     }
@@ -242,7 +247,7 @@ const Submit = styled.div`
     width: 84px;
     height: 35px;
     color: var(--secundary-background-color);
-    background-color: var(--secondary-color);
+    background-color: var(--secundary-text-color);
     font-size: 18px;
     padding: 0;
     margin-left: 10px;

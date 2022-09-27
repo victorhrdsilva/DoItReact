@@ -3,7 +3,8 @@ import { Link, useNavigate } from "react-router-dom"
 import { useContext, useState } from "react"
 import { register } from "../Service/Service";
 import UserContext from "../contexts/UserContext";
-import { ThreeDots } from 'react-loader-spinner'
+import { ThreeDots } from 'react-loader-spinner';
+import logo from '../image/ativo2.png';
 
 export default function RegisterPage() {
     const { loading, setLoading } = useContext(UserContext)
@@ -42,6 +43,7 @@ export default function RegisterPage() {
 
     return (
         <FormStyled>
+            <img src={logo} alt="logo"></img>
             <form onSubmit={Submit}>
                 <input name="email" type="email" placeholder="email" onChange={handleForm} required></input>
                 <input name="password" type="password" placeholder="senha" onChange={handleForm} required></input>
@@ -56,7 +58,7 @@ export default function RegisterPage() {
                     wrapperStyle={{}}
                     wrapperClassName=""
                     visible={true}
-                /> : "Entrar"}</button>
+                /> : "Cadastrar"}</button>
             </form>
             <Link to={"/"}>
                 <p>Já tem uma conta? Faça login!</p>

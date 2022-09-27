@@ -43,14 +43,14 @@ export default function HabitsListTemplete({ name, days, id, daysInicial }) {
 const ButtonDay = styled.button`
     width: 35px;
     height: 35px;
-    border: 1px solid var(--border-color-input);
-    color: var(--border-color-input);
+    border: none;
+    color: var(--secundary-text-color);
     background-color: var(--secundary-background-color);
     border-radius: 5px;
 `
 const ButtonDaySelected = styled(ButtonDay)`
-    background-color: var(--selected-button-color);
-    color: var(--secundary-background-color);
+    background-color: var(--secondary-color);
+    color: var(--secundary-text-color);
 `
 const NewHabits = styled.div`
     display: flex;
@@ -58,28 +58,10 @@ const NewHabits = styled.div`
     align-items: center;
     flex-direction: column;
     width: 85vw;
-    height: ${props => props.isOpenedNewHabits ? '100%' : '0'};
-    overflow: hidden;
-    background-color: var(--secundary-background-color);
-    padding: ${props => props.isOpenedNewHabits ? '16px 0' : '0'};
+    background-color: var(--secundary-text-color);
     margin-top: 22px;
     border-radius: 5px;
     box-sizing: border-box;
-    transition: all 0.07s linear;
-    input {
-        width: 90%;
-        height: 45px;
-        border: 1px solid var(--border-color-input);
-        font-size: 20px;
-        border-radius: 5px;
-        padding-left: 10px;
-        box-sizing: border-box;
-        ::placeholder {
-            padding-left: 10px;
-            color: var(--border-color-input);
-            font-size: 20px;
-        }
-    }
 `
 const WeekDays = styled.div`
     display: flex;
@@ -89,10 +71,9 @@ const WeekDays = styled.div`
     flex-wrap: wrap;
 `
 const HabitsList = styled(NewHabits)`
-    height: 91px;
     align-items: flex-start;
     padding: 5vw;
-    color: var(--primary-text-color);
+    color: var(--secondary-color);
 
 `
 const NameAndTrash = styled.div`
@@ -100,5 +81,6 @@ const NameAndTrash = styled.div`
     justify-content: space-between;
     width: 100%;
     font-size: 20px;
+    font-weight: 700;
 `
 

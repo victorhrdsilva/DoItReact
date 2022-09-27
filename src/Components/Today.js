@@ -1,7 +1,7 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext } from 'react';
 import styled from 'styled-components';
 import UserContext from '../contexts/UserContext';
-import { getHabitsToday, setHabitsTodayDone, setHabitsTodayUndone } from '../Service/Service';
+import {setHabitsTodayDone, setHabitsTodayUndone } from '../Service/Service';
 
 function TodayCardHabit({ id, name, done, currentSequence, highestSequence, reload, setReload }) {
     const isCurrentSequenceTheHighes = currentSequence === highestSequence;
@@ -18,7 +18,6 @@ function TodayCardHabit({ id, name, done, currentSequence, highestSequence, relo
             </div>
             <button>
                 <ion-icon onClick={() => {
-                    console.log(done)
                     if (!done) {
                         setHabitsTodayDone(id).then(setReload(reload + 1)).catch((res) =>
                             alert(res.response.data.message)
@@ -37,32 +36,13 @@ function TodayCardHabit({ id, name, done, currentSequence, highestSequence, relo
 export default function Today() {
     const dayjs = require('dayjs');
     const weekdayNames = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sabado"];
-    const { reload, setReload, todayDoneHabits, setTodayDoneHabits } = useContext(UserContext);
-    const [todayHabitsData, setTodayHabitsData] = useState([])
-    
-
-    useEffect(() =>
-        getHabitsToday().then((res => {
-            setTodayHabitsData(res.data);
-        })).catch((res) => {
-            alert(res.response.data.message);
-        }), [reload]);
-
-
-    setTodayDoneHabits(todayHabitsData.filter((item) => {
-        if(item.done) {
-            return true
-        } else {
-            return false
-        }
-    }).length)
-    
+    const { reload, setReload, todayHabitsData, percentageTodayHabitsDone } = useContext(UserContext);
 
     return (
         <Wrapper>
             <div>
                 <h1>{weekdayNames[dayjs().day()] + ", " + dayjs().format("DD/MM")}</h1>
-                <p>67% dos hábitos concluídos</p>
+                <p>{percentageTodayHabitsDone === 0? "Nenhum hábito concluído ainda" : `${percentageTodayHabitsDone.toFixed(0)}% dos hábitos concluídos`} </p>
             </div>
             {todayHabitsData.map((item, index) =>
                 <TodayCardHabit
@@ -94,11 +74,12 @@ const Wrapper = styled.div`
     h1 {
 
         font-size: 24px;
-        color: var(--primary-color);
+        color: var(--secundary-text-color);
+        font-weight: 800;
     }
     p {
         margin-top: 10px;
-        color: var(--sucess-color);
+        color: var(--secundary-text-color);
         font-size: 20px;
     }
 `
@@ -109,10 +90,11 @@ const Card = styled.div`
     align-items: center;
     width: 80vw;
     height: 100%;
-    background-color: var(--secundary-background-color);
-    color: var(--primary-text-color);
+    background-color: var(--secundary-text-color);
+    color: var(--secundary-background-color);
     padding: 2.5vw;
     box-sizing: border-box;
+    border-radius: 5px;
 
     div{
         display: flex;
@@ -126,10 +108,10 @@ const Card = styled.div`
     }
     p {
         font-size: 13px;
-        color: var(--primary-text-color);
+        color: var(--secundary-background-color);
     }
     span {
-        color: ${props => props.done ? "var(--sucess-color)" : "var(--primary-text-color)"}
+        color: ${props => props.done ? "var(--secondary-color)" : "var(--secundary-background-color)"}
     }
     button {
         width: 69px;
@@ -137,13 +119,13 @@ const Card = styled.div`
         border-radius: 5px;
         font-size: 60px;
         border: none;
-        color: var(--secundary-background-color);
+        color: var(--secundary-text-color);
         margin-left: 5px;
-        background-color: ${props => props.done ? "var(--sucess-color)" : "var(--background-color)"};
+        background-color: ${props => props.done ? "var(--secondary-color)" : "var(--secundary-background-color)"};
     }
 `
 const Highest = styled.p`
     span {
-        color: ${props => (props.done && props.isCurrentSequenceTheHighes) ? "var(--sucess-color)" : "var(--primary-text-color)"};
+        color: ${props => (props.done && props.isCurrentSequenceTheHighes) ? "var(--secondary-color)" : "var(--secundary-background-color)"};
     }
 `
