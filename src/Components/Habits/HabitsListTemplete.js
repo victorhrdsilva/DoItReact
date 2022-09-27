@@ -2,7 +2,6 @@ import UserContext from "../../contexts/UserContext";
 import { useContext } from "react";
 import { delectHabit } from "../../Service/Service";
 import styled from 'styled-components';
-import {ThreeDots} from 'react-loader-spinner';
 
 
 export default function HabitsListTemplete({ name, days, id, daysInicial }) {

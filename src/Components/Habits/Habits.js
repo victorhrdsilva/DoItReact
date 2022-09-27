@@ -1,7 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { create, getHabits } from '../../Service/Service';
-import { useNavigate } from 'react-router-dom';
 import UserContext from '../../contexts/UserContext';
 import HabitsListTemplete from './HabitsListTemplete';
 import { ThreeDots } from 'react-loader-spinner';
@@ -36,8 +35,6 @@ export default function Habits() {
     const daysInicial = ["D", "S", "T", "Q", "Q", "S", "S"];
 
     const [shipments, setShipments] = useState(0)
-
-    const navigate = useNavigate();
 
     const [selectedDays, setSelectedDays] = useState([]);
 

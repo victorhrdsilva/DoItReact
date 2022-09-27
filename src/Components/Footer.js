@@ -1,15 +1,19 @@
 import { buildStyles, CircularProgressbar } from 'react-circular-progressbar';
 import styled from 'styled-components';
 import 'react-circular-progressbar/dist/styles.css';
+import { useNavigate } from 'react-router-dom';
+
 
 export default function Footer() {
+    const navigate = useNavigate();
+    
     const value = 0.80;
 
     return (
         <Wrapper>
             <Background>
-                <h3>Hábitos</h3>
-                <ProgressBar>
+                <h3 onClick={() => navigate('/habits')}>Hábitos</h3>
+                <ProgressBar onClick={() => navigate('/today')}>
                     <CircularProgressbar
                         value={value}
                         background="true"

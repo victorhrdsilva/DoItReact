@@ -4,6 +4,7 @@ import GlobalStyle from '../styled/globalStyles';
 import PrivatePage from "./PrivatePage";
 import LoginPage from './LoginPage';
 import Habits from './Habits/Habits';
+import Today from './Today';
 import RegisterPage from './RegisterPage';
 import UserContext from '../contexts/UserContext';
 
@@ -24,6 +25,14 @@ export default function App() {
                             element={
                                 <PrivatePage>
                                     <Habits />
+                                </PrivatePage>
+                            }
+                        />
+                        <Route
+                            path="/today"
+                            element={
+                                <PrivatePage>
+                                    <Today />
                                 </PrivatePage>
                             }
                         />
