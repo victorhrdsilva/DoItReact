@@ -1,3 +1,10 @@
+# Happen React
+
+O presente projeto consiste rm uma aplicação em que você se registra e cria hábitos que deseja manter, marcando aqueles que já foram concluidos no dia.
+O aplicativo funciona por meio de uma API que guarda os dados do usuários e seus hábitos criados, além disso utilizei de ContextAPI, BrowserRouter, react-loader-spinner, react-circular-progressbar e dayjs em sua criação.
+
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
