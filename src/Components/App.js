@@ -9,13 +9,14 @@ import RegisterPage from './RegisterPage';
 import UserContext from '../contexts/UserContext';
 
 export default function App() {
-    const [loading, setLoading] = useState(false)
-    const [reload, setReload] = useState(0)
+    const [loading, setLoading] = useState(false);
+    const [reload, setReload] = useState(0);
+    const [todayDoneHabits, setTodayDoneHabits] = useState(0);
 
     return (
         <>
             <GlobalStyle />
-            <UserContext.Provider value={{ loading, setLoading, reload, setReload }}>
+            <UserContext.Provider value={{ loading, setLoading, reload, setReload, todayDoneHabits, setTodayDoneHabits }}>
                 <BrowserRouter>
                     <Routes>
                         <Route path="/" element={<LoginPage />}></Route>

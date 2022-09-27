@@ -1,17 +1,35 @@
-import { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
+import UserContext from '../contexts/UserContext';
+import { getHabitsToday, setHabitsTodayDone, setHabitsTodayUndone } from '../Service/Service';
 
-function TodayCardHabit ({name, done, currentSequence, highestSequence, currentSequence}) {
+function TodayCardHabit({ id, name, done, currentSequence, highestSequence, reload, setReload }) {
+    const isCurrentSequenceTheHighes = currentSequence === highestSequence;
     return (
-        <Card>
-                <div>
-                    <h2>{name}</h2>
-                    <p done={done}>Sequência atual: {currentSequence} dias</p>
-                    <p done={done}>Seu recorde: {highestSequence} dias</p>
-                </div>
-                <button done={done}>
-                    <ion-icon name="checkmark-sharp"></ion-icon>
-                </button>
+        <Card done={done}>
+            <div>
+                <h2>{name}</h2>
+                <p>Sequência atual: <span>{currentSequence} dias</span></p>
+                <Highest
+                    done={done}
+                    isCurrentSequenceTheHighes={isCurrentSequenceTheHighes}>
+                    Seu recorde: <span>{highestSequence} dias</span>
+                </Highest>
+            </div>
+            <button>
+                <ion-icon onClick={() => {
+                    console.log(done)
+                    if (!done) {
+                        setHabitsTodayDone(id).then(setReload(reload + 1)).catch((res) =>
+                            alert(res.response.data.message)
+                        )
+                    } else {
+                        setHabitsTodayUndone(id).then(setReload(reload + 1)).catch((res) =>
+                            alert(res.response.data.message)
+                        )
+                    }
+                }} name="checkmark-sharp"></ion-icon>
+            </button>
         </Card>
     )
 }
@@ -19,29 +37,26 @@ function TodayCardHabit ({name, done, currentSequence, highestSequence, currentS
 export default function Today() {
     const dayjs = require('dayjs');
     const weekdayNames = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sabado"];
-    const todayHabitsData = [
-        {
-            "id": 3,
-            "name": "Acordar",
-            "done": true,
-            "currentSequence": 3,
-            "highestSequence": 2
-        },
-        {
-            "id": 3,
-            "name": "Dormir",
-            "done": true,
-            "currentSequence": 2,
-            "highestSequence": 1
-        },
-        {
-            "id": 3,
-            "name": "Viver",
-            "done": true,
-            "currentSequence": 1,
-            "highestSequence": 1
+    const { reload, setReload, todayDoneHabits, setTodayDoneHabits } = useContext(UserContext);
+    const [todayHabitsData, setTodayHabitsData] = useState([])
+    
+
+    useEffect(() =>
+        getHabitsToday().then((res => {
+            setTodayHabitsData(res.data);
+        })).catch((res) => {
+            alert(res.response.data.message);
+        }), [reload]);
+
+
+    setTodayDoneHabits(todayHabitsData.filter((item) => {
+        if(item.done) {
+            return true
+        } else {
+            return false
         }
-    ]
+    }).length)
+    
 
     return (
         <Wrapper>
@@ -49,17 +64,18 @@ export default function Today() {
                 <h1>{weekdayNames[dayjs().day()] + ", " + dayjs().format("DD/MM")}</h1>
                 <p>67% dos hábitos concluídos</p>
             </div>
-            <Card>
-                <div>
-                    <h2>Acordar</h2>
-                    <p>Sequência atual: 3 dias</p>
-                    <p>Seu recorde: 5 dias</p>
-                </div>
-                <button>
-                    <ion-icon name="checkmark-sharp"></ion-icon>
-                </button>
-            </Card>
-
+            {todayHabitsData.map((item, index) =>
+                <TodayCardHabit
+                    key={index}
+                    id={item.id}
+                    name={item.name}
+                    done={item.done}
+                    highestSequence={item.highestSequence}
+                    currentSequence={item.currentSequence}
+                    setReload={setReload}
+                    reload={reload}
+                />
+            )}
         </Wrapper>
     )
 }
@@ -73,7 +89,7 @@ const Wrapper = styled.div`
     min-height: 70vh;
     div {
         width: 85vw;
-        margin-bottom: 40px;
+        margin-bottom: 25px;
     }
     h1 {
 
@@ -97,6 +113,7 @@ const Card = styled.div`
     color: var(--primary-text-color);
     padding: 2.5vw;
     box-sizing: border-box;
+
     div{
         display: flex;
         flex-direction: column;
@@ -109,7 +126,10 @@ const Card = styled.div`
     }
     p {
         font-size: 13px;
-        color: ${props => props.done ?  "var(--sucess-color)": "var(--primary-text-color)"};
+        color: var(--primary-text-color);
+    }
+    span {
+        color: ${props => props.done ? "var(--sucess-color)" : "var(--primary-text-color)"}
     }
     button {
         width: 69px;
@@ -119,6 +139,11 @@ const Card = styled.div`
         border: none;
         color: var(--secundary-background-color);
         margin-left: 5px;
-        background-color: ${props => props.done ?  "var(--sucess-color)": "var(--background-color)"};
+        background-color: ${props => props.done ? "var(--sucess-color)" : "var(--background-color)"};
+    }
+`
+const Highest = styled.p`
+    span {
+        color: ${props => (props.done && props.isCurrentSequenceTheHighes) ? "var(--sucess-color)" : "var(--primary-text-color)"};
     }
 `

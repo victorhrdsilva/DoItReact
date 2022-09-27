@@ -42,10 +42,29 @@ function getHabits() {
   return promise;
 };
 
+
 function delectHabit(id) {
   const config = createHeaders();
   const promise = axios.delete(`${url}habits/${id}`, config);
   return promise;
 }
 
-export { login, create, getHabits, register, delectHabit };
+function getHabitsToday() {
+  const config = createHeaders();
+  const promise = axios.get(`${url}habits/today`, config);
+  return promise;
+};
+
+function setHabitsTodayDone(id) {
+  const config = createHeaders();
+  const promise = axios.post(`${url}habits/${id}/check`, config);
+  return promise;
+};
+
+function setHabitsTodayUndone(id) {
+  const config = createHeaders();
+  const promise = axios.post(`${url}habits/${id}/uncheck`, config);
+  return promise;
+};
+
+export { login, create, getHabits, register, delectHabit, getHabitsToday, setHabitsTodayDone, setHabitsTodayUndone };
